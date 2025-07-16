@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 
+// Middleware to protect routes
+// This middleware checks if the request has a valid JWT token
 const protect = (req, res, next) => {
   const token = req.header('Authorization')?.split(' ')[1];
 
