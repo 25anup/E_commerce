@@ -1,47 +1,17 @@
 const express = require('express');
-require('dotenv').config();
-const db = require('./db');
-const User = require('./models/User');
+const dotenv = require('dotenv');
+
+const connectDB = require('./config/db');
+
+dotenv.config();
+connectDB();
+
 
 const app = express();
 app.use(express.json());
 
-const cors = require('cors');
-const helmet = require('helmet');
+app.use('/api/auth', require('./routes/authroute'));
 
-app.use(cors());
-app.use(helmet());
 
 const PORT = process.env.PORT || 5000;
-
-
-app.get('/', (req, res) => {
-  res.send('Welcome to the User API!');
-});
-
-
-app.post('/users', async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).json({ message: 'User created successfully', user });
-  } catch (error) {
-    console.error('❌ Error creating user:', error.message);
-    res.status(400).json({ error: 'Could not create user', details: error.message });
-  }
-});
-
-
-app.get('/users', async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (error) {
-    console.error('❌ Error fetching users:', error.message);
-    res.status(500).json({ error: 'Could not fetch users' });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
